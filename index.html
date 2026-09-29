@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L'Eden Fruitier & Le Jardin des Délices</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --vert-fonce:#1b4332; --vert:#2d6a4f; --vert-clair:#40916c;
+    --or:#b8860b; --or-clair:#d4a017; --creme:#faf6ef;
+    --texte:#1f2937; --gris:#6b7280; --bordure:#e5e0d5;
+    --succes:#166534; --erreur:#991b1b; --succes-bg:#dcfce7; --erreur-bg:#fee2e2;
+  }
+  body{font-family:Georgia,serif;background:var(--creme);color:var(--texte);min-height:100vh;}
+  header{background:linear-gradient(135deg,var(--vert-fonce),var(--vert));color:#fff;padding:1.1rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;box-shadow:0 2px 8px rgba(0,0,0,.15);position:sticky;top:0;z-index:100;}
+  header .brand{font-size:1.25rem;font-weight:bold;line-height:1.2;}
+  header .brand .sub{font-size:.7rem;font-weight:normal;opacity:.85;letter-spacing:2px;text-transform:uppercase;}
+  header .brand span{color:var(--or-clair);}
+  header nav{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;}
+  header nav button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.3);color:#fff;padding:.45rem 1rem;border-radius:6px;cursor:pointer;font-size:.88rem;font-family:inherit;transition:.2s;}
+  header nav button:hover{background:rgba(255,255,255,.2);}
+  header nav button.active{background:var(--or-clair);border-color:var(--or-clair);color:var(--vert-fonce);font-weight:bold;}
+  header .user-info{font-size:.85rem;opacity:.9;margin-right:.5rem;}
+  .bell{position:relative;background:transparent;border:1px solid rgba(255,255,255,.3);padding:.45rem .7rem;border-radius:6px;color:#fff;cursor:pointer;font-size:1.05rem;}
+  .bell .badge-count{position:absolute;top:-6px;right:-6px;background:#ef4444;color:#fff;font-size:.65rem;min-width:18px;height:18px;line-height:18px;border-radius:9px;padding:0 4px;font-family:sans-serif;font-weight:bold;}
+  main{max-width:1280px;margin:2rem auto;padding:0 1.5rem;}
+  h1,h2,h3{font-family:Georgia,serif;}
+  h1{font-size:1.6rem;color:var(--vert-fonce);margin-bottom:1rem;}
+  h2{font-size:1.2rem;color:var(--vert-fonce);margin-bottom:1rem;}
+  .card{background:#fff;border-radius:12px;padding:1.5rem;margin-bottom:1.25rem;box-shadow:0 1px 4px rgba(0,0,0,.06);border:1px solid var(--bordure);}
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem;}
+  .stat{background:#fff;border-radius:12px;padding:1.2rem;border-left:4px solid var(--vert-clair);box-shadow:0 1px 4px rgba(0,0,0,.06);}
+  .stat .label{font-size:.75rem;text-transform:uppercase;letter-spacing:1px;color:var(--gris);margin-bottom:.4rem;}
+  .stat .value{font-size:1.4rem;font-weight:bold;color:var(--vert-fonce);}
+  .stat .value.or{color:var(--or);}
+  .stat .sub{font-size:.75rem;color:var(--gris);margin-top:.3rem;}
+  input,select,textarea{padding:.65rem .9rem;border:1px solid var(--bordure);border-radius:8px;font-size:1rem;font-family:inherit;background:#fff;width:100%;margin-bottom:.7rem;}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--vert-clair);box-shadow:0 0 0 3px rgba(64,145,108,.15);}
+  label{display:block;font-size:.82rem;color:var(--gris);margin-bottom:.25rem;font-weight:bold;letter-spacing:.3px;}
+  button.primary{background:var(--vert);color:#fff;border:none;padding:.75rem 1.5rem;border-radius:8px;font-size:1rem;font-family:inherit;cursor:pointer;width:100%;font-weight:bold;}
+  button.primary:hover{background:var(--vert-fonce);}
+  button.or{background:var(--or);color:#fff;border:none;padding:.55rem 1rem;border-radius:6px;cursor:pointer;font-family:inherit;font-weight:bold;font-size:.9rem;}
+  button.or:hover{background:var(--or-clair);}
+  button.ghost{background:transparent;border:1px solid var(--bordure);color:var(--texte);padding:.5rem 1rem;border-radius:6px;cursor:pointer;font-family:inherit;font-size:.9rem;}
+  button.ghost:hover{background:var(--creme);}
+  .filters{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.25rem;}
+  .filters button{background:#fff;border:1px solid var(--bordure);padding:.4rem 1rem;border-radius:20px;cursor:pointer;font-family:inherit;font-size:.85rem;color:var(--texte);}
+  .filters button.active{background:var(--vert);color:#fff;border-color:var(--vert);}
+  .tree-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.2rem;}
+  .tree-card{background:#fff;border-radius:14px;border:1px solid var(--bordure);overflow:hidden;display:flex;flex-direction:column;transition:.2s;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+  .tree-card:hover{box-shadow:0 6px 20px rgba(27,67,50,.15);transform:translateY(-3px);}
+  .tree-photo{position:relative;width:100%;height:190px;background:linear-gradient(135deg,var(--vert),var(--vert-clair));overflow:hidden;}
+  .tree-photo img{width:100%;height:100%;object-fit:cover;display:block;}
+  .tree-photo .price-tag{position:absolute;top:10px;right:10px;background:rgba(184,134,11,.95);color:#fff;padding:.35rem .75rem;border-radius:20px;font-size:.85rem;font-weight:bold;box-shadow:0 2px 6px rgba(0,0,0,.25);font-family:Georgia,serif;}
+  .tree-photo .cat-tag{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.55);color:#fff;padding:.25rem .6rem;border-radius:12px;font-size:.68rem;text-transform:uppercase;letter-spacing:.5px;font-weight:bold;}
+  .tree-content{padding:1rem 1.2rem;flex:1;}
+  .tree-content h3{font-size:1.15rem;color:var(--vert-fonce);margin-bottom:.5rem;}
+  .tree-content .row{display:flex;justify-content:space-between;padding:.35rem 0;font-size:.88rem;border-bottom:1px dashed var(--bordure);}
+  .tree-content .row:last-of-type{border-bottom:none;}
+  .tree-content .row .k{color:var(--gris);}
+  .tree-content .row .v{font-weight:600;color:var(--vert-fonce);}
+  .tree-content .row .v.highlight{color:#16a34a;font-size:1rem;}
+  .tree-footer{padding:1rem 1.2rem;background:var(--creme);border-top:1px solid var(--bordure);}
+  .buy-row{display:flex;gap:.5rem;align-items:stretch;}
+  .buy-row input{width:85px;margin:0;text-align:center;font-weight:bold;}
+  .buy-row button{flex:1;}
+  table{width:100%;border-collapse:collapse;font-size:.9rem;}
+  th,td{text-align:left;padding:.7rem .5rem;border-bottom:1px solid var(--bordure);}
+  th{color:var(--gris);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;}
+  .thumb{width:38px;height:38px;border-radius:8px;object-fit:cover;vertical-align:middle;margin-right:.5rem;}
+  .empty{text-align:center;padding:2rem;color:var(--gris);font-style:italic;}
+  .msg{padding:.8rem 1.2rem;border-radius:8px;margin-bottom:1rem;font-size:.9rem;}
+  .msg.success{background:var(--succes-bg);color:var(--succes);}
+  .msg.error{background:var(--erreur-bg);color:var(--erreur);}
+  .muted{color:var(--gris);font-size:.85rem;}
+  .notif-list{max-height:400px;overflow-y:auto;}
+  .notif-item{padding:.8rem 1rem;border-left:3px solid var(--vert-clair);background:var(--creme);margin-bottom:.5rem;border-radius:6px;font-size:.88rem;}
+  .notif-item .time{font-size:.72rem;color:var(--gris);}
+  .notif-item.unread{border-left-color:var(--or);background:#fff8e1;}
+  footer{
+    text-align:center;
+    padding:2.5rem 1rem;
+    color:var(--gris);
+    font-size:.8rem;
+    border-top:1px solid var(--bordure);
+    margin-top:3rem;
+    background:linear-gradient(180deg,transparent,rgba(27,67,50,.04));
+  }
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:flex;justify-content:center;align-items:center;padding:1rem;overflow-y:auto;}
+  .modal{background:#fff;border-radius:14px;max-width:520px;width:100%;padding:1.5rem;box-shadow:0 20px 60px rgba(0,0,0,.3);max-height:90vh;overflow-y:auto;}
+  .modal h2{margin-bottom:1rem;}
+  .modal .close{float:right;background:transparent;border:none;font-size:1.5rem;cursor:pointer;color:var(--gris);line-height:1;}
+
+  .pay-methods{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.6rem;margin:1rem 0;}
+  .pay-method{border:2px solid var(--bordure);border-radius:10px;padding:.9rem .6rem;cursor:pointer;text-align:center;transition:.2s;background:#fff;}
+  .pay-method:hover{border-color:var(--vert-clair);transform:translateY(-2px);}
+  .pay-method.selected{border-color:var(--or);background:#fff8e1;box-shadow:0 0 0 3px rgba(184,134,11,.15);}
+  .pay-method .ico{font-size:1.8rem;display:block;margin-bottom:.3rem;}
+  .pay-method .name{font-size:.82rem;font-weight:bold;color:var(--vert-fonce);}
+  .pay-method .sub{font-size:.68rem;color:var(--gris);}
+
+  .balance-hero{background:linear-gradient(135deg,var(--vert-fonce),var(--vert));color:#fff;padding:1.5rem;border-radius:12px;margin-bottom:1.25rem;}
+  .balance-hero .label{font-size:.75rem;letter-spacing:2px;text-transform:uppercase;opacity:.85;}
+  .balance-hero .amount{font-size:2.2rem;font-weight:bold;color:var(--or-clair);margin:.3rem 0;}
+  .balance-hero .actions{display:flex;gap:.5rem;margin-top:1rem;flex-wrap:wrap;}
+  .balance-hero .actions button{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);color:#fff;padding:.55rem 1.1rem;border-radius:8px;cursor:pointer;font-family:inherit;font-weight:bold;font-size:.85rem;}
+  .balance-hero .actions button:hover{background:rgba(255,255,255,.25);}
+
+  .tag-status{display:inline-block;padding:.15rem .6rem;border-radius:12px;font-size:.7rem;font-weight:bold;text-transform:uppercase;}
+  .tag-status.pending{background:#fef3c7;color:#92400e;}
+  .tag-status.success{background:#dcfce7;color:#166534;}
+  .tag-status.failed{background:#fee2e2;color:#991b1b;}
+
+  @media(max-width:600px){header{padding:1rem;}main{padding:0 1rem;margin:1rem auto;}.stat .value{font-size:1.1rem;}.balance-hero .amount{font-size:1.6rem;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    🌳 L'Eden Fruitier <span>&amp;</span> Le Jardin des Délices
+    <div class="sub">Investissement agricole professionnel</div>
+  </div>
+  <nav id="nav"></nav>
+</header>
+
+<main id="app"></main>
+
+<div id="modalRoot"></div>
+
+<footer>
+  <div style="font-size:.95rem;color:var(--vert-fonce);font-weight:bold;letter-spacing:.5px;margin-bottom:.5rem;">
+    Conçu par <span style="color:var(--or);">Damien</span>
+  </div>
+  <div>
+    L'Eden Fruitier &amp; Le Jardin des Délices — Application privée professionnelle.
+  </div>
+  <div style="margin-top:.4rem;opacity:.8;">
+    © <span id="year"></span> — Tous droits réservés.
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   🌳 CATALOGUE — 33 ESSENCES
+   ============================================================ */
+const TREES = [
+  { id:"moringa", name:"Moringa", cat:"Fruitier", price:25000, dailyIncome:1800, surface:6, firstYield:1, lifespan:20, emoji:"🌿",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Moringa%20oleifera%20pods.jpg?width=600",
+    desc:"Arbre miracle, feuilles et gousses très nutritives." },
+  { id:"papayer", name:"Papayer", cat:"Fruitier", price:30000, dailyIncome:1500, surface:4, firstYield:1, lifespan:4, emoji:"🍈",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Carica%20papaya%20fruit.jpg?width=600",
+    desc:"Fruit tropical, production rapide dès la première année." },
+  { id:"goyavier", name:"Goyavier", cat:"Fruitier", price:35000, dailyIncome:2000, surface:9, firstYield:2, lifespan:15, emoji:"🍐",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Psidium%20guajava%20fruit.jpg?width=600",
+    desc:"Goyave riche en vitamine C, production abondante." },
+  { id:"bananier", name:"Bananier", cat:"Fruitier", price:40000, dailyIncome:3000, surface:6, firstYield:1, lifespan:10, emoji:"🍌",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Bananas%20white%20background.jpg?width=600",
+    desc:"Rendement rapide et régulier, forte demande locale." },
+  { id:"grenadier", name:"Grenadier", cat:"Fruitier", price:45000, dailyIncome:3500, surface:16, firstYield:3, lifespan:40, emoji:"🍎",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Pomegranate%20fruit.jpg?width=600",
+    desc:"Grenades très appréciées, arbre résistant à la sécheresse." },
+  { id:"acerola", name:"Cerisier acérola", cat:"Fruitier", price:55000, dailyIncome:5000, surface:9, firstYield:2, lifespan:25, emoji:"🍒",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Malpighia%20emarginata%20fruit.jpg?width=600",
+    desc:"Cerise des Antilles, 30× plus de vitamine C que l'orange." },
+  { id:"anacardier", name:"Anacardier", cat:"Fruitier", price:60000, dailyIncome:4500, surface:25, firstYield:3, lifespan:40, emoji:"🥜",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Cashew%20apples%20and%20nuts.jpg?width=600",
+    desc:"Noix de cajou et pomme de cajou, deux produits rentables." },
+  { id:"corossolier", name:"Corossolier", cat:"Fruitier", price:65000, dailyIncome:5500, surface:25, firstYield:3, lifespan:30, emoji:"🍈",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Annona%20muricata%20fruit.jpg?width=600",
+    desc:"Corossol, fruit exotique à forte valeur marchande." },
+  { id:"neflier", name:"Néflier", cat:"Fruitier", price:70000, dailyIncome:7000, surface:25, firstYield:3, lifespan:50, emoji:"🍐",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Eriobotrya%20japonica%20fruit.jpg?width=600",
+    desc:"Nèfles douces, marché porteur en saison." },
+  { id:"figuier", name:"Figuier", cat:"Fruitier", price:70000, dailyIncome:11000, surface:16, firstYield:2, lifespan:40, emoji:"🫐",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Figs%20fruit.jpg?width=600",
+    desc:"Figues fraîches, marché premium." },
+  { id:"manguier", name:"Manguier", cat:"Fruitier", price:75000, dailyIncome:6500, surface:36, firstYield:4, lifespan:60, emoji:"🥭",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Mangos%20of%20Kerala.jpg?width=600",
+    desc:"Mangue, fruit roi d'Afrique de l'Ouest." },
+  { id:"mandarinnier", name:"Mandarinnier", cat:"Fruitier", price:75000, dailyIncome:7500, surface:16, firstYield:3, lifespan:30, emoji:"🍊",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Mandarin%20oranges.jpg?width=600",
+    desc:"Mandarines faciles à vendre, arbre compact." },
+  { id:"pamplemoussier", name:"Pamplemoussier", cat:"Fruitier", price:80000, dailyIncome:10000, surface:25, firstYield:3, lifespan:30, emoji:"🍊",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Grapefruit%20fruit.jpg?width=600",
+    desc:"Pamplemousses juteux, forte valeur ajoutée." },
+  { id:"citronnier", name:"Citronnier", cat:"Fruitier", price:85000, dailyIncome:9000, surface:16, firstYield:3, lifespan:30, emoji:"🍋",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Lemon%20fruit.jpg?width=600",
+    desc:"Citrons, production étalée sur toute l'année." },
+  { id:"kaki", name:"Kaki", cat:"Fruitier", price:85000, dailyIncome:13000, surface:16, firstYield:3, lifespan:40, emoji:"🍊",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Kaki%20fruit.jpg?width=600",
+    desc:"Kakis sucrés, très demandés en fin d'année." },
+  { id:"oranger", name:"Oranger", cat:"Fruitier", price:90000, dailyIncome:12000, surface:20, firstYield:3, lifespan:40, emoji:"🍊",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Orange-Fruit-Pieces.jpg?width=600",
+    desc:"Oranges, classique rentable et durable." },
+  { id:"safoutier", name:"Safoutier (prunier)", cat:"Fruitier", price:95000, dailyIncome:17000, surface:36, firstYield:4, lifespan:50, emoji:"🫐",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Dacryodes%20edulis%20fruit.jpg?width=600",
+    desc:"Safou, fruit local très prisé." },
+  { id:"avocatier", name:"Avocatier", cat:"Fruitier", price:100000, dailyIncome:15500, surface:36, firstYield:4, lifespan:40, emoji:"🥑",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Avocado%20fruit.jpg?width=600",
+    desc:"Avocat, forte demande internationale." },
+  { id:"manguier-greffe", name:"Manguier greffé (variété premium)", cat:"Fruitier", price:110000, dailyIncome:14500, surface:36, firstYield:2, lifespan:60, emoji:"🥭",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Mango%20tree%20fruit.jpg?width=600",
+    desc:"Variétés greffées Kent/Keitt, exportables." },
+  { id:"karite", name:"Karitier", cat:"Rente", price:110000, dailyIncome:21000, surface:64, firstYield:10, lifespan:200, emoji:"🌰",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Vitellaria%20paradoxa%20fruit.jpg?width=600",
+    desc:"Beurre de karité, or vert de l'Afrique de l'Ouest." },
+  { id:"jacquier", name:"Jacquier", cat:"Fruitier", price:120000, dailyIncome:22500, surface:64, firstYield:4, lifespan:60, emoji:"🍈",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Jackfruit%20fruit.jpg?width=600",
+    desc:"Plus gros fruit du monde, très nourrissant." },
+  { id:"nere", name:"Néré", cat:"Rente", price:130000, dailyIncome:38000, surface:64, firstYield:8, lifespan:100, emoji:"🌰",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Parkia%20biglobosa%20fruit.jpg?width=600",
+    desc:"Soumbala, condiment traditionnel très demandé." },
+  { id:"cocotier", name:"Cocotier", cat:"Fruitier", price:150000, dailyIncome:19500, surface:25, firstYield:5, lifespan:60, emoji:"🥥",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Coconut%20and%20oil.jpg?width=600",
+    desc:"Noix de coco, eau et huile, multiple débouchés." },
+  { id:"arbre-pain", name:"Arbre à pain", cat:"Fruitier", price:160000, dailyIncome:25500, surface:64, firstYield:4, lifespan:70, emoji:"🍞",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Artocarpus%20altilis%20fruit.jpg?width=600",
+    desc:"Fruit farineux, sécurité alimentaire." },
+  { id:"tamarinier", name:"Tamarinier", cat:"Fruitier", price:180000, dailyIncome:36000, surface:64, firstYield:5, lifespan:150, emoji:"🌰",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Tamarindus%20indica%20fruit.jpg?width=600",
+    desc:"Tamarin, jus et condiments." },
+  { id:"cacaoyer", name:"Cacaoyer", cat:"Rente", price:200000, dailyIncome:24000, surface:16, firstYield:4, lifespan:30, emoji:"🍫",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Cacao-pod-k4636-14.jpg?width=600",
+    desc:"Fèves de cacao, matière première mondiale." },
+  { id:"palmier", name:"Palmier à huile", cat:"Rente", price:250000, dailyIncome:29000, surface:100, firstYield:4, lifespan:30, emoji:"🌴",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Elaeis%20guineensis%20fruit.jpg?width=600",
+    desc:"Huile rouge, savon, cosmétiques." },
+  { id:"hevea", name:"Hévéa", cat:"Rente", price:300000, dailyIncome:34500, surface:36, firstYield:6, lifespan:30, emoji:"🌳",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Rubber%20tree%20plantation.jpg?width=600",
+    desc:"Latex naturel, marché mondial stable." },
+  { id:"acajou", name:"Acajou", cat:"Patrimoine", price:350000, dailyIncome:45000, surface:100, firstYield:15, lifespan:200, emoji:"🌲",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Khaya%20senegalensis%20tree.jpg?width=600",
+    desc:"Bois précieux, valeur mobilière durable." },
+  { id:"teck", name:"Teck", cat:"Patrimoine", price:400000, dailyIncome:50000, surface:100, firstYield:15, lifespan:150, emoji:"🌲",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Tectona%20grandis%20tree.jpg?width=600",
+    desc:"Bois d'œuvre premium, très recherché." },
+  { id:"iroko", name:"Iroko", cat:"Patrimoine", price:450000, dailyIncome:55000, surface:200, firstYield:20, lifespan:500, emoji:"🌳",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Milicia%20excelsa%20tree.jpg?width=600",
+    desc:"Bois dur légendaire, patrimoine exceptionnel." },
+  { id:"baobab", name:"Baobab", cat:"Patrimoine", price:500000, dailyIncome:60000, surface:300, firstYield:15, lifespan:2000, emoji:"🌳",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Adansonia%20digitata%20tree.jpg?width=600",
+    desc:"Arbre millénaire, fruit (pain de singe) très nutritif." },
+  { id:"fromager", name:"Fromager (Ceiba)", cat:"Patrimoine", price:1000000, dailyIncome:40500, surface:400, firstYield:10, lifespan:150, emoji:"🌳",
+    img:"https://commons.wikimedia.org/wiki/Special:FilePath/Ceiba%20pentandra%20tree.jpg?width=600",
+    desc:"Arbre sacré, kapok et symbole du domaine." }
+];
+
+/* ============================================================
+   💳 MOYENS DE PAIEMENT & DE RETRAIT
+   ============================================================ */
+const PAYMENT_METHODS = [
+  { id:"airtel",      name:"Airtel Money",     ico:"📱", sub:"Mobile money",   fields:["phone"],          color:"#dc2626" },
+  { id:"mobile-cash", name:"Mobile Cash",      ico:"📲", sub:"Mobile money",   fields:["phone"],          color:"#ea580c" },
+  { id:"paypal",      name:"PayPal",           ico:"🅿️", sub:"International",  fields:["email"],          color:"#0070ba" },
+  { id:"card",        name:"Carte bancaire",   ico:"💳", sub:"Visa / MC",      fields:["cardNumber","expiry","cvv","cardName"], color:"#2563eb" },
+  { id:"visa",        name:"Visa Direct",      ico:"💠", sub:"Visa uniquement",fields:["cardNumber","expiry","cvv","cardName"], color:"#1a1f71" },
+  { id:"bank",        name:"Virement bancaire",ico:"🏦", sub:"IBAN / RIB",     fields:["iban","bankName","accountName"], color:"#166534" }
+];
+
+const CAT_LABELS = { Fruitier:"Arbre fruitier", Rente:"Culture de rente", Patrimoine:"Arbre patrimonial" };
+const MONTHLY_GROWTH = 1.10;
+const MS_DAY = 86400000;
+const MS_MONTH = 30 * MS_DAY;
+const STORAGE_KEY = "eden_fruitier_pro_v1";
+
+/* ============================================================
+   📈 MOTEUR DE REVENUS (+10 % / mois)
+   ============================================================ */
+function dailyIncomeAtMonth(baseDaily, monthsElapsed) {
+  return baseDaily * Math.pow(MONTHLY_GROWTH, monthsElapsed);
+}
+function computeEarnings(holding, now = Date.now()) {
+  const tree = TREES.find(t => t.id === holding.treeId);
+  if (!tree) return { totalEarned: 0, currentDaily: 0, monthsElapsed: 0 };
+  const startMs = holding.date;
+  const lastClaimMs = holding.lastClaimAt || startMs;
+  if (!startMs) return { totalEarned: 0, currentDaily: tree.dailyIncome, monthsElapsed: 0 };
+  const qty = holding.qty || 1;
+  let total = 0, cursor = lastClaimMs;
+  while (cursor < now) {
+    const monthsElapsed = Math.floor((cursor - startMs) / MS_MONTH);
+    const dailyRate = dailyIncomeAtMonth(tree.dailyIncome, monthsElapsed) * qty;
+    const nextMonthBoundary = startMs + (monthsElapsed + 1) * MS_MONTH;
+    const segmentEnd = Math.min(now, nextMonthBoundary);
+    const days = (segmentEnd - cursor) / MS_DAY;
+    total += dailyRate * days;
+    cursor = segmentEnd;
+  }
+  const monthsNow = Math.floor((now - startMs) / MS_MONTH);
+  const currentDaily = dailyIncomeAtMonth(tree.dailyIncome, monthsNow) * qty;
+  return { totalEarned: Math.floor(total), currentDaily: Math.round(currentDaily), monthsElapsed: monthsNow };
+}
+
+/* ============================================================
+   💾 STOCKAGE LOCAL
+   ============================================================ */
+function loadDB() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw) { try { return JSON.parse(raw); } catch(e){} }
+  return { users: [], currentUser: null, notifications: {} };
+}
+function saveDB(db) { localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
+let DB = loadDB();
+
+/* ============================================================
+   🔔 NOTIFICATIONS NAVIGATEUR
+   ============================================================ */
+async function requestNotificationPermission() {
+  if (!("Notification" in window)) return false;
+  if (Notification.permission === "granted") return true;
+  if (Notification.permission === "denied") return false;
+  return (await Notification.requestPermission()) === "granted";
+}
+function showBrowserNotification(title, body) {
+  if (Notification.permission !== "granted") return;
+  try { new Notification(title, { body, tag:"eden-fruitier" }); } catch(e){}
+}
+
+/* ============================================================
+   🧠 ÉTAT GLOBAL
+   ============================================================ */
+let state = {
+  view:"dashboard", filter:"all", message:null,
+  showNotifCenter:false, modal:null
+};
+
+const $ = sel => document.querySelector(sel);
+const fcfa = n => Number(n).toLocaleString("fr-FR").replace(/\u202f/g," ") + " FCFA";
+const num  = n => Number(n).toLocaleString("fr-FR").replace(/\u202f/g," ");
+function setMessage(text, type="success") { state.message = { text, type }; render(); }
+function clearMessage() { state.message = null; }
+
+function getUser() { return DB.users.find(u => u.email === DB.currentUser) || null; }
+function getNotifications() {
+  if (!DB.currentUser) return [];
+  return DB.notifications[DB.currentUser] || [];
+}
+function setNotifications(list) {
+  if (!DB.currentUser) return;
+  DB.notifications[DB.currentUser] = list.slice(-100);
+  saveDB(DB);
+}
+
+/* ============================================================
+   🎨 RENDU
+   ============================================================ */
+function render() {
+  renderNav();
+  renderModal();
+  const app = $("#app");
+  const user = getUser();
+  if (!user) { app.innerHTML = renderAuth(); }
+  else if (state.showNotifCenter) { app.innerHTML = renderNotifCenter(); }
+  else {
+    const v = state.view || "dashboard";
+    if (v==="dashboard") app.innerHTML = renderDashboard(user);
+    else if (v==="catalogue") app.innerHTML = renderCatalogue(user);
+    else if (v==="portefeuille") app.innerHTML = renderPortfolio(user);
+    else if (v==="transactions") app.innerHTML = renderTransactions(user);
+    else if (v==="globale") app.innerHTML = renderGlobal(user);
+  }
+  attachEvents();
+}
+
+function renderNav() {
+  const nav = $("#nav");
+  const user = getUser();
+  if (!user) { nav.innerHTML = ""; return; }
+  const v = state.view;
+  const isAdmin = user.role === "admin";
+  const unread = getNotifications().filter(n => !n.read).length;
+  nav.innerHTML = `
+    <span class="user-info">${user.email}${isAdmin?" 👑":""}</span>
+    <button data-nav="dashboard" class="${v==='dashboard'?'active':''}">Tableau de bord</button>
+    <button data-nav="catalogue" class="${v==='catalogue'?'active':''}">Catalogue</button>
+    <button data-nav="portefeuille" class="${v==='portefeuille'?'active':''}">Portefeuille</button>
+    <button data-nav="transactions" class="${v==='transactions'?'active':''}">Transactions</button>
+    ${isAdmin?`<button data-nav="globale" class="${v==='globale'?'active':''}">Vue globale</button>`:""}
+    <button class="bell" id="notifBtn">🔔${unread>0?`<span class="badge-count">${unread}</span>`:""}</button>
+    <button id="logoutBtn">Déconnexion</button>
+  `;
+}
+
+function renderMessage() {
+  if (!state.message) return "";
+  const { text, type } = state.message;
+  clearMessage();
+  return `<div class="msg ${type}">${text}</div>`;
+}
+
+/* ---------- Authentification ---------- */
+function renderAuth() {
+  return `
+    ${renderMessage()}
+    <div style="max-width:440px;margin:3rem auto;display:grid;gap:1.25rem;">
+      <div class="card" style="text-align:center;">
+        <h1 style="font-size:1.3rem;">🌳 L'Eden Fruitier</h1>
+        <p class="muted" style="margin-bottom:1rem;">& Le Jardin des Délices</p>
+      </div>
+      <div class="card">
+        <h2>Connexion</h2>
+        <input id="loginEmail" type="email" placeholder="Adresse email">
+        <input id="loginPassword" type="password" placeholder="Mot de passe">
+        <button class="primary" id="loginBtn">Se connecter</button>
+      </div>
+      <div class="card">
+        <h2>Créer un compte</h2>
+        <p class="muted" style="margin-bottom:.8rem;">Le premier compte créé devient <strong>administrateur principal</strong>.</p>
+        <input id="regEmail" type="email" placeholder="Adresse email">
+        <input id="regPassword" type="password" placeholder="Mot de passe (6 car. min.)">
+        <button class="primary" id="registerBtn">Créer le compte</button>
+      </div>
+    </div>
+  `;
+}
+
+/* ---------- Tableau de bord ---------- */
+function renderDashboard(user) {
+  const stats = computePortfolioStats(user.holdings);
+  const balance = user.balance || 0;
+  const isAdmin = user.role === "admin";
+  return `
+    ${renderMessage()}
+    <h1>Bonjour${isAdmin?", Administrateur principal":""} 👋</h1>
+
+    <div class="balance-hero">
+      <div class="label">Trésorerie disponible</div>
+      <div class="amount">${fcfa(balance)}</div>
+      <div class="actions">
+        <button data-modal="deposit">💰 Déposer des fonds</button>
+        <button data-modal="withdraw">🏧 Retirer</button>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat"><div class="label">Revenus à récupérer</div><div class="value" style="color:#16a34a;">${fcfa(stats.unclaimed)}</div>
+        <div class="sub">${stats.totalTrees} arbre(s) en production</div></div>
+      <div class="stat"><div class="label">Capital investi</div><div class="value">${fcfa(stats.totalInvested)}</div></div>
+      <div class="stat"><div class="label">Revenu quotidien actuel</div><div class="value">${fcfa(stats.currentDaily)}</div>
+        <div class="sub">+10 % / mois</div></div>
+      <div class="stat"><div class="label">Revenu après 12 mois</div><div class="value or">${fcfa(stats.currentDaily * Math.pow(1.10, 12))}</div>
+        <div class="sub">par jour</div></div>
+    </div>
+
+    ${stats.unclaimed > 0 ? `
+    <div class="card" style="border:2px solid #16a34a;background:linear-gradient(135deg,#f0fdf4,#dcfce7);">
+      <h2 style="color:#166534;">💰 Revenus à récupérer</h2>
+      <p style="font-size:2rem;font-weight:bold;color:#16a34a;margin:.5rem 0;">${fcfa(stats.unclaimed)}</p>
+      <p class="muted" style="margin-bottom:1rem;">Générés en continu par vos arbres.</p>
+      <button class="or" id="claimBtn" style="padding:.75rem 2rem;font-size:1rem;">Récupérer maintenant</button>
+    </div>` : ""}
+
+    <div class="card">
+      <h2>Moyens de paiement acceptés</h2>
+      <p class="muted" style="margin-bottom:1rem;">Dépôt et retrait via :</p>
+      <div class="pay-methods">
+        ${PAYMENT_METHODS.map(m => `
+          <div class="pay-method" style="cursor:default;">
+            <span class="ico" style="color:${m.color};">${m.ico}</span>
+            <div class="name">${m.name}</div>
+            <div class="sub">${m.sub}</div>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+
+    ${isAdmin?`
+    <div class="card">
+      <h2>Patrimoine professionnel</h2>
+      <div class="stats-grid">
+        <div class="stat"><div class="label">Collaborateurs</div><div class="value">${DB.users.length}</div></div>
+        <div class="stat"><div class="label">Arbres totaux</div><div class="value">${num(DB.users.reduce((a,u)=>a+computePortfolioStats(u.holdings).totalTrees,0))}</div></div>
+        <div class="stat"><div class="label">Capital total planté</div><div class="value or">${fcfa(DB.users.reduce((a,u)=>a+computePortfolioStats(u.holdings).totalInvested,0))}</div></div>
+      </div>
+      <button class="ghost" data-nav="globale">Voir le détail par collaborateur →</button>
+    </div>` : ""}
+  `;
+}
+
+/* ---------- Carte visuelle d'un arbre ---------- */
+function renderTreeVisual(t) {
+  const svg = encodeURIComponent(`
+    <svg xmlns='http://www.w3.org/2000/svg' width='600' height='380'>
+      <defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+        <stop offset='0%' stop-color='#2d6a4f'/>
+        <stop offset='100%' stop-color='#40916c'/>
+      </linearGradient></defs>
+      <rect width='600' height='380' fill='url(#g)'/>
+      <text x='300' y='210' font-size='180' text-anchor='middle' dominant-baseline='middle'>${t.emoji}</text>
+      <text x='300' y='330' font-size='30' text-anchor='middle' fill='#faf6ef' font-family='Georgia' font-weight='bold'>${t.name.toUpperCase()}</text>
+    </svg>
+  `);
+  const fallback = `data:image/svg+xml;charset=utf-8,${svg}`;
+  return `
+    <div class="tree-photo">
+      <span class="cat-tag">${CAT_LABELS[t.cat]}</span>
+      <span class="price-tag">${fcfa(t.price)}</span>
+      <img src="${t.img}" alt="${t.name}"
+           onerror="this.onerror=null;this.src='${fallback}';">
+    </div>
+  `;
+}
+
+/* ---------- Catalogue ---------- */
+function renderCatalogue(user) {
+  const filter = state.filter || "all";
+  const list = filter==="all" ? TREES : TREES.filter(t => t.cat === filter);
+  const balance = user.balance || 0;
+  return `
+    ${renderMessage()}
+    <h1>Catalogue des arbres</h1>
+    <p class="muted" style="margin-bottom:1rem;">
+      Trésorerie : <strong>${fcfa(balance)}</strong> —
+      <strong>${TREES.length}</strong> essences — revenus +10 % chaque mois.
+    </p>
+
+    <div class="filters">
+      <button data-filter="all" class="${filter==='all'?'active':''}">Tous (${TREES.length})</button>
+      <button data-filter="Fruitier" class="${filter==='Fruitier'?'active':''}">Fruitiers (${TREES.filter(t=>t.cat==='Fruitier').length})</button>
+      <button data-filter="Rente" class="${filter==='Rente'?'active':''}">Rente (${TREES.filter(t=>t.cat==='Rente').length})</button>
+      <button data-filter="Patrimoine" class="${filter==='Patrimoine'?'active':''}">Patrimoine (${TREES.filter(t=>t.cat==='Patrimoine').length})</button>
+    </div>
+
+    <div class="tree-grid">
+      ${list.map(t => {
+        const daily1 = t.dailyIncome;
+        const dailyAfter12 = Math.round(daily1 * Math.pow(1.10, 12));
+        const annualFirstYear = Math.round(daily1 * 30 * (Math.pow(1.10, 12) - 1) / 0.10);
+        return `
+        <div class="tree-card">
+          ${renderTreeVisual(t)}
+          <div class="tree-content">
+            <h3>${t.name}</h3>
+            <p class="muted" style="margin-bottom:.6rem;font-size:.82rem;">${t.desc}</p>
+            <div class="row"><span class="k">Revenu jour 1</span><span class="v highlight">${fcfa(daily1)}/j</span></div>
+            <div class="row"><span class="k">Revenu après 12 mois</span><span class="v highlight">${fcfa(dailyAfter12)}/j</span></div>
+            <div class="row"><span class="k">Revenus 1ʳᵉ année</span><span class="v highlight">${fcfa(annualFirstYear)}</span></div>
+            <div class="row"><span class="k">Surface</span><span class="v">${t.surface} m²</span></div>
+            <div class="row"><span class="k">1ʳᵉ production</span><span class="v">${t.firstYield} an${t.firstYield>1?'s':''}</span></div>
+            <div class="row"><span class="k">Durée de vie</span><span class="v">${t.lifespan} ans</span></div>
+          </div>
+          <div class="tree-footer">
+            <div class="buy-row">
+              <input type="number" min="1" step="1" value="1" id="qty-${t.id}">
+              <button class="or" data-buy="${t.id}">Planter</button>
+            </div>
+          </div>
+        </div>`;
+      }).join("")}
+    </div>
+  `;
+}
+
+/* ---------- Portefeuille ---------- */
+function renderPortfolio(user) {
+  const stats = computePortfolioStats(user.holdings);
+  const balance = user.balance || 0;
+  return `
+    ${renderMessage()}
+    <h1>Mon portefeuille</h1>
+
+    <div class="balance-hero">
+      <div class="label">Trésorerie disponible</div>
+      <div class="amount">${fcfa(balance)}</div>
+      <div class="actions">
+        <button data-modal="deposit">💰 Déposer</button>
+        <button data-modal="withdraw">🏧 Retirer</button>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat"><div class="label">Arbres</div><div class="value">${num(stats.totalTrees)}</div></div>
+      <div class="stat"><div class="label">Capital investi</div><div class="value">${fcfa(stats.totalInvested)}</div></div>
+      <div class="stat"><div class="label">Revenu quotidien</div><div class="value">${fcfa(stats.currentDaily)}</div></div>
+      <div class="stat"><div class="label">À récupérer</div><div class="value or">${fcfa(stats.unclaimed)}</div></div>
+    </div>
+
+    ${stats.unclaimed > 0 ? `
+    <div class="card" style="text-align:center;">
+      <button class="or" id="claimBtn" style="padding:.9rem 2.5rem;font-size:1.05rem;">💰 Récupérer ${fcfa(stats.unclaimed)}</button>
+    </div>` : ""}
+
+    <div class="card">
+      <h2>Plantations en cours</h2>
+      ${user.holdings.length === 0
+        ? `<p class="empty">Aucun arbre planté pour le moment.</p>`
+        : `<table>
+            <thead><tr>
+              <th>Essence</th><th class="num">Qté</th>
+              <th class="num">Revenu/jour</th>
+              <th class="num">Cumul non récupéré</th>
+              <th>Depuis</th>
+            </tr></thead>
+            <tbody>
+              ${user.holdings.map(h => {
+                const t = TREES.find(x => x.id === h.treeId);
+                if (!t) return "";
+                const e = computeEarnings(h);
+                const thumbSvg = encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><rect width='80' height='80' fill='#2d6a4f'/><text x='40' y='52' font-size='40' text-anchor='middle'>${t.emoji}</text></svg>`);
+                return `<tr>
+                  <td>
+                    <img class="thumb" src="${t.img}" alt="${t.name}"
+                         onerror="this.style.background='linear-gradient(135deg,#2d6a4f,#40916c)';this.src='data:image/svg+xml;charset=utf-8,${thumbSvg}';">
+                    <strong>${t.name}</strong>
+                  </td>
+                  <td class="num">${num(h.qty)}</td>
+                  <td class="num" style="color:#16a34a;font-weight:bold;">${fcfa(e.currentDaily)}</td>
+                  <td class="num" style="color:#b8860b;font-weight:bold;">${fcfa(e.totalEarned)}</td>
+                  <td>${new Date(h.date).toLocaleDateString("fr-FR")}</td>
+                </tr>`;
+              }).join("")}
+            </tbody>
+          </table>`}
+    </div>
+  `;
+}
+
+/* ---------- Transactions ---------- */
+function renderTransactions(user) {
+  const list = (user.transactions || []).slice().reverse();
+  return `
+    ${renderMessage()}
+    <h1>Historique des transactions</h1>
+    <div class="card">
+      ${list.length === 0
+        ? `<p class="empty">Aucune transaction pour le moment.</p>`
+        : `<table>
+            <thead><tr>
+              <th>Date</th><th>Type</th><th>Méthode</th>
+              <th class="num">Montant</th><th>Statut</th>
+            </tr></thead>
+            <tbody>
+              ${list.map(t => `
+                <tr>
+                  <td>${new Date(t.date).toLocaleString("fr-FR")}</td>
+                  <td>${t.type === "deposit" ? "💰 Dépôt" : t.type === "withdraw" ? "🏧 Retrait" : t.type === "claim" ? "🌾 Récupération" : "🌱 Achat"}</td>
+                  <td>${t.methodLabel || t.method}</td>
+                  <td class="num" style="color:${t.amount>0?'#16a34a':'#dc2626'};font-weight:bold;">
+                    ${t.amount>0?'+':''}${fcfa(t.amount)}
+                  </td>
+                  <td><span class="tag-status ${t.status}">${t.status === 'success' ? 'Réussi' : t.status === 'pending' ? 'En cours' : 'Échec'}</span></td>
+                </tr>`).join("")}
+            </tbody>
+          </table>`}
+    </div>
+  `;
+}
+
+/* ---------- Vue globale (admin) ---------- */
+function renderGlobal(user) {
+  if (user.role !== "admin") return `<div class="card"><p class="empty">Accès réservé à l'administrateur principal.</p></div>`;
+  const members = DB.users.map(u => ({
+    email: u.email, role: u.role, balance: u.balance,
+    ...computePortfolioStats(u.holdings)
+  }));
+  const tTrees = members.reduce((a,m)=>a+(m.totalTrees||0),0);
+  const tInv = members.reduce((a,m)=>a+(m.totalInvested||0),0);
+  const tDaily = members.reduce((a,m)=>a+(m.currentDaily||0),0);
+  const tBalance = members.reduce((a,m)=>a+(m.balance||0),0);
+  return `
+    ${renderMessage()}
+    <h1>Vue globale</h1>
+    <div class="stats-grid">
+      <div class="stat"><div class="label">Collaborateurs</div><div class="value">${members.length}</div></div>
+      <div class="stat"><div class="label">Arbres totaux</div><div class="value">${num(tTrees)}</div></div>
+      <div class="stat"><div class="label">Capital total planté</div><div class="value or">${fcfa(tInv)}</div></div>
+      <div class="stat"><div class="label">Revenu quotidien global</div><div class="value">${fcfa(tDaily)}</div></div>
+    </div>
+    <div class="card">
+      <h2>Trésorerie consolidée : ${fcfa(tBalance)}</h2>
+      <table>
+        <thead><tr>
+          <th>Collaborateur</th><th>Rôle</th>
+          <th class="num">Arbres</th><th class="num">Capital</th>
+          <th class="num">Trésorerie</th><th class="num">Revenu/jour</th>
+        </tr></thead>
+        <tbody>
+          ${members.map(m => `
+            <tr>
+              <td>${m.email}${m.role==="admin"?" 👑":""}</td>
+              <td>${m.role==="admin"?"Administrateur principal":"Collaborateur"}</td>
+              <td class="num">${num(m.totalTrees||0)}</td>
+              <td class="num">${fcfa(m.totalInvested||0)}</td>
+              <td class="num">${fcfa(m.balance||0)}</td>
+              <td class="num">${fcfa(m.currentDaily||0)}</td>
+            </tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+/* ---------- Centre de notifications ---------- */
+function renderNotifCenter() {
+  const list = getNotifications().slice().reverse();
+  return `
+    ${renderMessage()}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem;">
+      <h1 style="margin:0;">🔔 Notifications</h1>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+        <button class="ghost" id="markAllReadBtn">Tout lu</button>
+        <button class="ghost" id="clearNotifsBtn">Effacer</button>
+        <button class="ghost" id="backBtn">← Retour</button>
+      </div>
+    </div>
+    <div class="card">
+      ${list.length === 0
+        ? `<p class="empty">Aucune notification.</p>`
+        : `<div class="notif-list">
+            ${list.map(n => `
+              <div class="notif-item ${n.read?"":"unread"}">
+                <div><strong>${n.title}</strong></div>
+                <div style="margin:.2rem 0;">${n.body}</div>
+                <div class="time">${new Date(n.date).toLocaleString("fr-FR")}</div>
+              </div>`).join("")}
+          </div>`}
+    </div>
+  `;
+}
+
+/* ============================================================
+   🧮 STATS
+   ============================================================ */
+function computePortfolioStats(holdings) {
+  let totalTrees=0, totalInvested=0, totalSurface=0, currentDaily=0, unclaimed=0;
+  for (const h of (holdings||[])) {
+    const t = TREES.find(x => x.id === h.treeId);
+    if (!t) continue;
+    const e = computeEarnings(h);
+    totalTrees += h.qty;
+    totalInvested += h.qty * t.price;
+    totalSurface += h.qty * t.surface;
+    currentDaily += e.currentDaily;
+    unclaimed += e.totalEarned;
+  }
+  return { totalTrees, totalInvested, totalSurface, currentDaily, unclaimed };
+}
+
+/* ============================================================
+   💳 MODAL — Dépôt / Retrait
+   ============================================================ */
+function renderModal() {
+  const root = $("#modalRoot");
+  if (!state.modal) { root.innerHTML = ""; return; }
+  const { type } = state.modal;
+  const isDeposit = type === "deposit";
+  const title = isDeposit ? "💰 Déposer des fonds" : "🏧 Retirer des fonds";
+  const user = getUser();
+
+  root.innerHTML = `
+    <div class="modal-overlay" id="modalOverlay">
+      <div class="modal">
+        <button class="close" id="modalClose">×</button>
+        <h2>${title}</h2>
+        <p class="muted" style="margin-bottom:1rem;">
+          ${isDeposit
+            ? "Choisissez votre moyen de paiement et le montant à déposer."
+            : `Choisissez votre moyen de retrait. Solde : <strong>${fcfa(user?.balance || 0)}</strong>.`}
+        </p>
+
+        <label>Montant (FCFA)</label>
+        <input id="modalAmount" type="number" min="1000" step="500"
+               placeholder="Ex : 50000" value="${isDeposit ? '50000' : ''}">
+
+        <label>Moyen ${isDeposit ? "de paiement" : "de retrait"}</label>
+        <div class="pay-methods" id="payMethodsList">
+          ${PAYMENT_METHODS.map(m => `
+            <div class="pay-method" data-method="${m.id}">
+              <span class="ico" style="color:${m.color};">${m.ico}</span>
+              <div class="name">${m.name}</div>
+              <div class="sub">${m.sub}</div>
+            </div>
+          `).join("")}
+        </div>
+
+        <div id="methodFields"></div>
+
+        <button class="primary" id="modalSubmit" style="margin-top:1rem;">
+          ${isDeposit ? "Procéder au dépôt" : "Confirmer le retrait"}
+        </button>
+
+        <p class="muted" style="margin-top:.9rem;font-size:.78rem;text-align:center;">
+          🔒 Mode démonstration — aucune transaction réelle n'est effectuée.
+        </p>
+      </div>
+    </div>
+  `;
+
+  document.querySelectorAll("[data-method]").forEach(el => {
+    el.onclick = () => { state.modal.methodId = el.dataset.method; render(); };
+  });
+
+  if (state.modal.methodId) {
+    const sel = document.querySelector(`[data-method="${state.modal.methodId}"]`);
+    if (sel) sel.classList.add("selected");
+    renderMethodFields();
+  }
+  attachModalEvents();
+}
+
+function renderMethodFields() {
+  const mId = state.modal.methodId;
+  if (!mId) return;
+  const method = PAYMENT_METHODS.find(m => m.id === mId);
+  const target = $("#methodFields");
+  if (!method || !target) return;
+  const labels = {
+    phone:"Numéro de téléphone", email:"Adresse email PayPal",
+    cardNumber:"Numéro de carte (16 chiffres)", expiry:"Date d'expiration (MM/AA)",
+    cvv:"Code CVV", cardName:"Nom du titulaire",
+    iban:"IBAN / RIB", bankName:"Nom de la banque", accountName:"Titulaire du compte"
+  };
+  const placeholders = {
+    phone:"+227 90 00 00 00", email:"vous@exemple.com",
+    cardNumber:"4242 4242 4242 4242", expiry:"12/27", cvv:"123",
+    cardName:"JEAN DUPONT", iban:"NE00 0000 0000 0000 0000",
+    bankName:"Banque Atlantique", accountName:"Jean Dupont"
+  };
+  target.innerHTML = `
+    <div style="border-top:1px solid var(--bordure);padding-top:1rem;margin-top:.5rem;">
+      <p class="muted" style="margin-bottom:.6rem;font-weight:bold;color:var(--vert-fonce);">
+        ${method.ico} Informations ${method.name}
+      </p>
+      ${method.fields.map(f => `
+        <label>${labels[f] || f}</label>
+        <input type="text" id="field-${f}" placeholder="${placeholders[f] || ''}">
+      `).join("")}
+    </div>
+  `;
+}
+
+function attachModalEvents() {
+  const close = $("#modalClose");
+  if (close) close.onclick = () => { state.modal = null; render(); };
+  const overlay = $("#modalOverlay");
+  if (overlay) overlay.onclick = (e) => { if (e.target === overlay) { state.modal = null; render(); } };
+  const submit = $("#modalSubmit");
+  if (submit) submit.onclick = () => handleModalSubmit();
+}
+
+function handleModalSubmit() {
+  const user = getUser();
+  if (!user) return;
+  const amount = parseFloat($("#modalAmount").value);
+  const methodId = state.modal.methodId;
+  if (!methodId) return setModalError("Veuillez choisir un moyen.");
+  if (!amount || amount <= 0) return setModalError("Montant invalide.");
+  const method = PAYMENT_METHODS.find(m => m.id === methodId);
+  for (const f of method.fields) {
+    const el = $(`#field-${f}`);
+    if (!el || !el.value.trim()) return setModalError(`Le champ "${f}" est obligatoire.`);
+  }
+  if (state.modal.type === "withdraw" && amount > (user.balance || 0)) {
+    return setModalError("Solde insuffisant pour ce retrait.");
+  }
+
+  const tx = {
+    type: state.modal.type,
+    method: method.id,
+    methodLabel: method.name,
+    amount: state.modal.type === "deposit" ? amount : -amount,
+    status: "success",
+    date: Date.now()
+  };
+  user.transactions = user.transactions || [];
+  user.transactions.push(tx);
+
+  if (state.modal.type === "deposit") user.balance = (user.balance||0) + amount;
+  else user.balance = (user.balance||0) - amount;
+
+  addNotification(
+    state.modal.type === "deposit" ? "💰 Dépôt confirmé" : "✅ Retrait initié",
+    state.modal.type === "deposit"
+      ? `${fcfa(amount)} ajoutés via ${method.name}.`
+      : `${fcfa(amount)} en route vers ${method.name}.`
+  );
+
+  saveDB(DB);
+  const isDeposit = state.modal.type === "deposit";
+  state.modal = null;
+  setMessage(
+    isDeposit
+      ? `Dépôt de ${fcfa(amount)} confirmé via ${method.name}.`
+      : `Retrait de ${fcfa(amount)} initié vers ${method.name}.`,
+    "success"
+  );
+}
+
+function setModalError(msg) {
+  const target = $(".modal");
+  if (!target) return;
+  const existing = target.querySelector(".modal-error");
+  if (existing) existing.remove();
+  const el = document.createElement("p");
+  el.className = "msg error modal-error";
+  el.style.marginTop = "1rem";
+  el.textContent = msg;
+  target.appendChild(el);
+}
+
+/* ============================================================
+   🔔 NOTIFICATIONS
+   ============================================================ */
+function addNotification(title, body) {
+  const list = getNotifications();
+  list.push({ id: Date.now() + Math.random(), title, body, date: Date.now(), read: false });
+  setNotifications(list);
+  showBrowserNotification(title, body);
+}
+function markAllRead() {
+  const list = getNotifications();
+  list.forEach(n => n.read = true);
+  setNotifications(list);
+}
+
+/* ============================================================
+   ⚡ ÉVÉNEMENTS
+   ============================================================ */
+function attachEvents() {
+  document.querySelectorAll("[data-nav]").forEach(btn => {
+    btn.onclick = () => { state.view = btn.dataset.nav; state.showNotifCenter = false; render(); };
+  });
+
+  document.querySelectorAll("[data-modal]").forEach(btn => {
+    btn.onclick = () => { state.modal = { type: btn.dataset.modal, methodId: null }; render(); };
+  });
+
+  const notifBtn = $("#notifBtn");
+  if (notifBtn) notifBtn.onclick = () => { state.showNotifCenter = true; markAllRead(); render(); };
+
+  const backBtn = $("#backBtn");
+  if (backBtn) backBtn.onclick = () => { state.showNotifCenter = false; render(); };
+
+  const markAllReadBtn = $("#markAllReadBtn");
+  if (markAllReadBtn) markAllReadBtn.onclick = () => { markAllRead(); render(); };
+
+  const clearNotifsBtn = $("#clearNotifsBtn");
+  if (clearNotifsBtn) clearNotifsBtn.onclick = () => { setNotifications([]); render(); };
+
+  const logoutBtn = $("#logoutBtn");
+  if (logoutBtn) logoutBtn.onclick = () => { DB.currentUser = null; saveDB(DB); render(); };
+
+  const regBtn = $("#registerBtn");
+  if (regBtn) regBtn.onclick = () => {
+    const email = $("#regEmail").value.trim().toLowerCase();
+    const password = $("#regPassword").value;
+    if (!email || !password) return setMessage("Email et mot de passe obligatoires.", "error");
+    if (password.length < 6) return setMessage("Mot de passe : 6 caractères minimum.", "error");
+    if (DB.users.some(u => u.email === email)) return setMessage("Cet email est déjà utilisé.", "error");
+    const role = DB.users.length === 0 ? "admin" : "collaborateur";
+    DB.users.push({ email, password, role, balance: 0, holdings: [], transactions: [] });
+    DB.currentUser = email;
+    saveDB(DB);
+    setMessage(role === "admin" ? "Vous êtes administrateur principal." : "Compte créé.", "success");
+    requestNotificationPermission();
+  };
+
+  const loginBtn = $("#loginBtn");
+  if (loginBtn) loginBtn.onclick = () => {
+    const email = $("#loginEmail").value.trim().toLowerCase();
+    const password = $("#loginPassword").value;
+    const user = DB.users.find(u => u.email === email && u.password === password);
+    if (!user) return setMessage("Identifiants invalides.", "error");
+    DB.currentUser = email;
+    saveDB(DB);
+    requestNotificationPermission();
+  };
+
+  document.querySelectorAll("[data-filter]").forEach(btn => {
+    btn.onclick = () => { state.filter = btn.dataset.filter; render(); };
+  });
+
+  document.querySelectorAll("[data-buy]").forEach(btn => {
+    btn.onclick = () => {
+      const user = getUser();
+      const treeId = btn.dataset.buy;
+      const tree = TREES.find(t => t.id === treeId);
+      const qty = parseInt(document.querySelector(`#qty-${treeId}`).value, 10);
+      if (!qty || qty <= 0) return setMessage("Quantité invalide.", "error");
+      const total = qty * tree.price;
+      if (total > (user.balance || 0)) return setMessage(`Trésorerie insuffisante : ${fcfa(total)} requis.`, "error");
+
+      user.balance -= total;
+      user.holdings.push({
+        treeId, qty, amount: total,
+        date: Date.now(),
+        lastClaimAt: Date.now()
+      });
+      user.transactions = user.transactions || [];
+      user.transactions.push({
+        type: "purchase",
+        method: "internal",
+        methodLabel: `Achat ${tree.name}`,
+        amount: -total,
+        status: "success",
+        date: Date.now()
+      });
+      saveDB(DB);
+      addNotification("🌱 Nouvelle plantation",
+        `${qty} × ${tree.name} — ${fcfa(total)}. Revenu initial : ${fcfa(tree.dailyIncome * qty)}/jour.`);
+      setMessage(`${qty} ${tree.name}${qty>1?'s':''} planté${qty>1?'s':''} — ${fcfa(total)}.`, "success");
+    };
+  });
+
+  const claimBtn = $("#claimBtn");
+  if (claimBtn) claimBtn.onclick = () => {
+    const user = getUser();
+    const nowMs = Date.now();
+    let totalToClaim = 0;
+    for (const h of user.holdings) {
+      const e = computeEarnings(h, nowMs);
+      if (e.totalEarned > 0) {
+        totalToClaim += e.totalEarned;
+        h.lastClaimAt = nowMs;
+      }
+    }
+    if (totalToClaim <= 0) return setMessage("Rien à récupérer pour l'instant.", "error");
+    user.balance = (user.balance || 0) + totalToClaim;
+    user.transactions = user.transactions || [];
+    user.transactions.push({
+      type: "claim",
+      method: "internal",
+      methodLabel: "Récupération de revenus",
+      amount: totalToClaim,
+      status: "success",
+      date: Date.now()
+    });
+    saveDB(DB);
+    addNotification("✅ Revenus récupérés", `${fcfa(totalToClaim)} ajoutés à votre trésorerie.`);
+    setMessage(`${fcfa(totalToClaim)} récupérés.`, "success");
+  };
+}
+
+/* ============================================================
+   🚀 DÉMARRAGE
+   ============================================================ */
+document.getElementById("year").textContent = new Date().getFullYear();
+render();
+setInterval(() => { if (getUser()) render(); }, 60_000);
+</script>
+
+</body>
+</html>
